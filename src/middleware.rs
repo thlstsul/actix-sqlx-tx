@@ -19,6 +19,7 @@ use crate::{tx::TxSlot, Error};
 ///
 /// [`Tx`]: crate::Tx
 /// [request extensions]: https://docs.rs/actix-web/latest/actix_web/dev/struct.Extensions.html
+/// [refer to axum-sqlx-tx]: https://github.com/wasdacraic/axum-sqlx-tx
 #[derive(Clone)]
 pub struct TransactionMiddleware<DB: sqlx::Database, E = Error> {
     pool: Rc<sqlx::Pool<DB>>,

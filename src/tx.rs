@@ -45,10 +45,13 @@ use crate::{
 /// used to configure the error response returned when the extractor fails:
 ///
 /// ```
-/// use actix_web::{http::StatusCode, ResponseError};
+/// use actix_web::{
+///     http::{header::ContentType, StatusCode},
+///     HttpResponse, ResponseError,
+/// };
 /// use actix_sqlx_tx::Tx;
 /// use sqlx::Sqlite;
-///
+/// [derive(Debug)]
 /// struct MyError(actix_sqlx_tx::Error);
 ///
 /// // The error type must implement From<actix_sqlx_tx::Error>
@@ -65,7 +68,7 @@ use crate::{
 ///             .insert_header(ContentType::html())
 ///             .body(self.to_string())
 ///     }
-///     
+///
 ///     fn status_code(&self) -> StatusCode {
 ///         StatusCode::INTERNAL_SERVER_ERROR
 ///     }
@@ -130,15 +133,14 @@ where
     fn from_request(req: &actix_web::HttpRequest, _: &mut actix_web::dev::Payload) -> Self::Future {
         let req = req.clone();
         Box::pin(async move {
-            let mut extensions = req.extensions_mut();
-            let ext = extensions
-                .get_mut::<Lazy<DB>>()
+            // drop ext, or it will drop after request finish
+            let mut ext = req
+                .extensions_mut()
+                .remove::<Lazy<DB>>()
                 .ok_or(Error::MissingExtension)?;
 
             let tx = ext.get_or_begin().await?;
 
-            // drop ext, or it will drop after request finish
-            extensions.remove::<Lazy<DB>>();
             Ok(Self(tx, PhantomData))
         })
     }
@@ -162,7 +164,7 @@ impl<DB: sqlx::Database> TxSlot<DB> {
     }
 
     pub(crate) async fn commit(self) -> Result<(), sqlx::Error> {
-        if let Some(tx) =  self.0.into_inner().flatten().and_then(Slot::into_inner) {
+        if let Some(tx) = self.0.into_inner().flatten().and_then(Slot::into_inner) {
             tx.commit().await?;
         }
         Ok(())

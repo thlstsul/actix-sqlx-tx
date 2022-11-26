@@ -16,8 +16,7 @@ use std::sync::{Arc, Weak};
 
 /// A slot that may contain a value that can be leased.
 ///
-/// The slot itself is opaque, the only way to see the value (if any) is with `lease` or
-/// `into_inner`.
+/// The slot itself is opaque, the only way to see the value (if any) is with `lease` or `into_inner`.
 pub(crate) struct Slot<T>(Arc<Mutex<Option<T>>>);
 
 impl<T> Slot<T> {
@@ -50,7 +49,7 @@ impl<T> Slot<T> {
 
     /// Get the inner value from the slot, if any.
     ///
-    /// Note that if this returns `Some`, there are no oustanding leases. If it returns `None` then
+    /// Note that if this returns `Some`, there are no outstanding leases. If it returns `None` then
     /// the value has been leased, and since this consumes the slot the value will be dropped once
     /// the lease is done.
     pub(crate) fn into_inner(self) -> Option<T> {
