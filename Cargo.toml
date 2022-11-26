@@ -1,0 +1,28 @@
+[package]
+name = "actix-sqlx-tx"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[features]
+all-databases = ["any", "mssql", "mysql", "postgres", "sqlite"]
+any = ["sqlx/any"]
+mssql = ["sqlx/mssql"]
+mysql = ["sqlx/mysql"]
+postgres = ["sqlx/postgres"]
+sqlite = ["sqlx/sqlite"]
+
+runtime-tokio-native-tls = ["sqlx/runtime-tokio-native-tls"]
+runtime-tokio-rustls = ["sqlx/runtime-tokio-rustls"]
+
+[package.metadata.docs.rs]
+features = ["all-databases", "runtime-tokio-rustls"]
+
+[dependencies]
+actix-utils = "3.0.1"
+actix-web = { version = "4.2.1", default-features = false }
+futures-core = "0.3.25"
+futures-util = { version = "0.3.25", default-features = false }
+parking_lot = "0.12.1"
+sqlx = { version = "0.6.2", default-features = false }
+thiserror = "1.0.37"
