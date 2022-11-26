@@ -2,6 +2,9 @@
 name = "actix-sqlx-tx"
 version = "0.1.0"
 edition = "2021"
+license = "Apache-2.0"
+description = "Request-scoped sqlx transactions for actix-web"
+repository = "https://github.com/thlstsul/actix-sqlx-tx"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [features]
